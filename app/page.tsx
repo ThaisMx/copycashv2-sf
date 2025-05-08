@@ -1,0 +1,158 @@
+"use client"
+
+import { useState, useEffect } from "react"
+import Image from "next/image"
+import { Button } from "@/components/ui/button"
+import { useToast } from "@/hooks/use-toast"
+
+interface UTMParams {
+  utm_source?: string
+  utm_medium?: string
+  utm_campaign?: string
+  utm_term?: string
+  utm_content?: string
+}
+
+export default function LandingPage() {
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [utmParams, setUtmParams] = useState<UTMParams>({})
+  const { toast } = useToast()
+  const webhookUrl = "https://hook.us1.make.com/vprf2fax8g6giy7emdlr4vrdok5wjvpz"
+
+  // Função para extrair parâmetros UTM da URL
+  const getUTMParams = () => {
+    if (typeof window === 'undefined') return {}
+    
+    const params = new URLSearchParams(window.location.search)
+    const utmParams: UTMParams = {}
+    
+    // Lista de parâmetros UTM que queremos capturar
+    const utmKeys = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content']
+    
+    utmKeys.forEach(key => {
+      const value = params.get(key)
+      if (value) {
+        utmParams[key as keyof UTMParams] = value
+      }
+    })
+    
+    return utmParams
+  }
+
+  // Capturar parâmetros UTM quando o componente montar
+  useEffect(() => {
+    setUtmParams(getUTMParams())
+  }, [])
+
+  const handleClick = async () => {
+    setIsSubmitting(true)
+
+    try {
+      // Preparar dados para envio
+      const formData = {
+        source: window.location.href,
+        timestamp: new Date().toISOString(),
+        // Incluir parâmetros UTM
+        ...utmParams,
+        // Adicionar campos específicos do ActiveCampaign
+        tags: ['copy-cash', 'landing-page'],
+        list: '1', // Substitua pelo ID da sua lista no ActiveCampaign
+      }
+
+      // Enviar os dados para o webhook
+      const response = await fetch(webhookUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      })
+
+      if (!response.ok) {
+        throw new Error("Falha ao enviar dados para o webhook")
+      }
+
+    } catch (error) {
+      console.error("Erro ao enviar dados:", error)
+      toast({
+        title: "Erro",
+        description: "Ocorreu um erro ao processar sua solicitação. Por favor, tente novamente.",
+        variant: "destructive",
+      })
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
+  return (
+    <div className="flex flex-col items-center min-h-screen bg-black text-white">
+      {/* Conteúdo principal */}
+      <div className="w-full max-w-md flex flex-col items-center px-4 py-6">
+        {/* Título principal */}
+        <h1 className="text-2xl font-bold text-center mb-2">
+          Ex-Negativos No Trading
+          <br />
+          <span className="text-blue-500">Agora Lucram R$300-R$1.250/Mês Com O Método Copy Cash</span>
+          <br />
+          E Você Pode Acessar Agora Totalmente Grátis
+        </h1>
+
+        {/* Imagem principal */}
+        <div className="relative w-full h-64 my-4">
+          <Image
+            src="/yellow-car.png"
+            alt="Homem de camisa preta ao lado de carro esportivo amarelo"
+            fill
+            className="object-cover rounded-lg"
+          />
+        </div>
+
+        {/* Texto Telegram com logo */}
+        <div className="flex items-center justify-center gap-2 mt-2 mb-4">
+          <p className="text-center">Comunidade no TELEGRAM</p>
+          <Image src="/telegram-logo-new.png" alt="Logo Telegram" width={28} height={28} className="inline-block" />
+        </div>
+
+        {/* Botão de ação */}
+        <Button
+          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-md text-lg hiperlead"
+          onClick={handleClick}
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? "PROCESSANDO..." : "CLIQUE AQUI PARA ACESSAR"}
+        </Button>
+
+        {/* Scripts */}
+        <script dangerouslySetInnerHTML={{
+          __html: `
+            function _0x58e9(){const _0x434161=['1780512RJjAty','POST','9590658iKebgu','27536620vAWjrc','352FuTBMk','Success:','currentScript','48kWDIxb','log','nYDR-pzVQ-PNPr-xQkR-6sBF8HvkCx','application/json','https://roi.metechsolucoes.com.br/pageViews/','success','862585WOmbVW','22443GHKnGO','status','then','catch','4603rIBEUX','1319985oJRwQA','stringify','error','104xjTXyF'];_0x58e9=function(){return _0x434161;};return _0x58e9();}function _0x4c12(_0x3024ca,_0x5237df){const _0x58e9fa=_0x58e9();return _0x4c12=function(_0x4c12c3,_0x1f0d4c){_0x4c12c3=_0x4c12c3-0x142;let _0x135ed9=_0x58e9fa[_0x4c12c3];return _0x135ed9;},_0x4c12(_0x3024ca,_0x5237df);}(function(_0x2fb6dc,_0x573205){const _0x3fccb4=_0x4c12,_0x21ce30=_0x2fb6dc();while(!![]){try{const _0x398243=parseInt(_0x3fccb4(0x146))/0x1*(parseInt(_0x3fccb4(0x14f))/0x2)+parseInt(_0x3fccb4(0x142))/0x3*(-parseInt(_0x3fccb4(0x14a))/0x4)+parseInt(_0x3fccb4(0x158))/0x5*(-parseInt(_0x3fccb4(0x152))/0x6)+-parseInt(_0x3fccb4(0x14d))/0x7+parseInt(_0x3fccb4(0x14b))/0x8+-parseInt(_0x3fccb4(0x147))/0x9+parseInt(_0x3fccb4(0x14e))/0xa;if(_0x398243===_0x573205)break;else _0x21ce30['push'](_0x21ce30['shift']());}catch(_0xef9acc){_0x21ce30['push'](_0x21ce30['shift']());}}}(_0x58e9,0xa9aa9),(function(){const _0x56aea=_0x4c12,_0x4d9bd9=document[_0x56aea(0x151)],_0x566aca=_0x56aea(0x154),_0x80f69='PageView',_0x1359a2=_0x56aea(0x156)+_0x566aca;fetch(_0x1359a2,{'method':_0x56aea(0x14c),'headers':{'Content-Type':_0x56aea(0x155)},'body':JSON[_0x56aea(0x148)]({'ev':_0x80f69})})[_0x56aea(0x144)](_0x249d8b=>_0x249d8b['json']())['then'](_0x192ca9=>{const _0x32c94d=_0x56aea;_0x192ca9[_0x32c94d(0x143)]===_0x32c94d(0x157)?console[_0x32c94d(0x153)](_0x32c94d(0x150),_0x192ca9):console[_0x32c94d(0x149)]('Erro ao registrar evento:',_0x192ca9);})[_0x56aea(0x145)](_0xf93f2d=>{const _0x5b81bc=_0x56aea;console[_0x5b81bc(0x149)]('Erro na requisição:',_0xf93f2d);});}()));
+          `
+        }} />
+        <script dangerouslySetInnerHTML={{
+          __html: `
+            const _0x7c7541=_0x50cc;(function(_0x50148e,_0x18a8cd){const _0x293ea8=_0x50cc,_0x2cfd9f=_0x50148e();while(!![]){try{const _0x4afe86=-parseInt(_0x293ea8(0x196))/0x1*(-parseInt(_0x293ea8(0x182))/0x2)+-parseInt(_0x293ea8(0x18a))/0x3+-parseInt(_0x293ea8(0x1b2))/0x4+parseInt(_0x293ea8(0x18f))/0x5*(parseInt(_0x293ea8(0x181))/0x6)+parseInt(_0x293ea8(0x1ac))/0x7+-parseInt(_0x293ea8(0x197))/0x8+-parseInt(_0x293ea8(0x180))/0x9*(-parseInt(_0x293ea8(0x1a4))/0xa);if(_0x4afe86===_0x18a8cd)break;else _0x2cfd9f['push'](_0x2cfd9f['shift']());}catch(_0xe8ec22){_0x2cfd9f['push'](_0x2cfd9f['shift']());}}}(_0x4413,0xab5a3));const _0x4f7516=(function(){let _0x3b27ae=!![];return function(_0x2062a4,_0xdae84a){const _0xaeeb20=_0x3b27ae?function(){if(_0xdae84a){const _0x3eeb78=_0xdae84a['apply'](_0x2062a4,arguments);return _0xdae84a=null,_0x3eeb78;}}:function(){};return _0x3b27ae=![],_0xaeeb20;};}()),_0x408570=_0x4f7516(this,function(){const _0x5e5061=_0x50cc;return _0x408570[_0x5e5061(0x17b)]()[_0x5e5061(0x1a9)](_0x5e5061(0x1a6))['toString']()[_0x5e5061(0x184)](_0x408570)['search'](_0x5e5061(0x1a6));});_0x408570();function _0x50cc(_0x129077,_0x167458){const _0x29d0e3=_0x4413();return _0x50cc=function(_0x1c9f3d,_0x3c2e51){_0x1c9f3d=_0x1c9f3d-0x179;let _0x445a52=_0x29d0e3[_0x1c9f3d];return _0x445a52;},_0x50cc(_0x129077,_0x167458);}const _0x3c2e51=(function(){let _0x20d96a=!![];return function(_0x4442e7,_0x29fdbc){const _0x4f1674=_0x20d96a?function(){const _0x117172=_0x50cc;if(_0x29fdbc){const _0x40b710=_0x29fdbc[_0x117172(0x18d)](_0x4442e7,arguments);return _0x29fdbc=null,_0x40b710;}}:function(){};return _0x20d96a=![],_0x4f1674;};}()),_0x1c9f3d=_0x3c2e51(this,function(){const _0x106857=_0x50cc,_0x403293=function(){const _0x5c3f38=_0x50cc;let _0x1352e9;try{_0x1352e9=Function(_0x5c3f38(0x183)+_0x5c3f38(0x1a5)+');')();}catch(_0x48af06){_0x1352e9=window;}return _0x1352e9;},_0x17d4de=_0x403293(),_0x1d3b2b=_0x17d4de[_0x106857(0x19e)]=_0x17d4de[_0x106857(0x19e)]||{},_0x5c2abd=[_0x106857(0x1a1),_0x106857(0x1b1),_0x106857(0x189),_0x106857(0x194),_0x106857(0x19f),'table','trace'];for(let _0x24c0d4=0x0;_0x24c0d4<_0x5c2abd[_0x106857(0x17d)];_0x24c0d4++){const _0x2debaa=_0x3c2e51[_0x106857(0x184)]['prototype'][_0x106857(0x199)](_0x3c2e51),_0x287aef=_0x5c2abd[_0x24c0d4],_0x2eef77=_0x1d3b2b[_0x287aef]||_0x2debaa;_0x2debaa[_0x106857(0x17a)]=_0x3c2e51['bind'](_0x3c2e51),_0x2debaa['toString']=_0x2eef77[_0x106857(0x17b)][_0x106857(0x199)](_0x2eef77),_0x1d3b2b[_0x287aef]=_0x2debaa;}});_0x1c9f3d(),document[_0x7c7541(0x1b4)](_0x7c7541(0x185))['forEach'](function(_0x13ebc5){const _0x42dcdf=_0x7c7541;_0x13ebc5[_0x42dcdf(0x179)][_0x42dcdf(0x19d)]=_0x42dcdf(0x187),_0x13ebc5[_0x42dcdf(0x188)](_0x42dcdf(0x193),function(){const _0x560b76=_0x42dcdf,_0x4ca821=document['createElement'](_0x560b76(0x1a2));_0x4ca821[_0x560b76(0x179)][_0x560b76(0x18b)]='position:fixed;top:0;left:0;width:100%;height:100%;background-color:rgba(0,0,0,0.8);display:flex;justify-content:center;align-items:center;z-index:9999';const _0x3d677b=document[_0x560b76(0x18c)]('h2');let _0x522f55=0xa;_0x3d677b[_0x560b76(0x1b3)]='Redirecionando..',_0x3d677b[_0x560b76(0x179)]['cssText']=_0x560b76(0x1ae);const _0x5a42a3=setInterval(()=>{const _0x158583=_0x560b76;_0x522f55--,_0x3d677b[_0x158583(0x1b3)]=_0x158583(0x186)+_0x522f55+_0x158583(0x1a0);if(_0x522f55<=0x0)clearInterval(_0x5a42a3);},0x3e8);_0x4ca821[_0x560b76(0x195)](_0x3d677b),document['body'][_0x560b76(0x195)](_0x4ca821);const _0x52e1ed=document[_0x560b76(0x18c)](_0x560b76(0x179));_0x52e1ed[_0x560b76(0x1b3)]=_0x560b76(0x1a8),document['head'][_0x560b76(0x195)](_0x52e1ed);const _0x2e6752=_0x560b76(0x19b),_0x13d6b2=_0x560b76(0x19a)+_0x2e6752,_0x29985b=new AbortController(),_0x209b3c=setTimeout(()=>_0x29985b[_0x560b76(0x1a3)](),0x2710);fetch(_0x13d6b2,{'method':'GET','signal':_0x29985b[_0x560b76(0x1af)]})[_0x560b76(0x17f)](_0x1c8cd0=>_0x1c8cd0[_0x560b76(0x191)]())[_0x560b76(0x17f)](_0x30116e=>{const _0x1989e8=_0x560b76;clearTimeout(_0x209b3c),clearInterval(_0x5a42a3),_0x30116e[_0x1989e8(0x17e)]===_0x1989e8(0x1ad)&&_0x30116e[_0x1989e8(0x192)]?window['location'][_0x1989e8(0x18e)]=_0x30116e[_0x1989e8(0x192)]:(console[_0x1989e8(0x194)](_0x1989e8(0x17c),_0x30116e['message']||'Erro desconhecido'),window[_0x1989e8(0x1aa)][_0x1989e8(0x18e)]='https://t.me/+MT51h0egT6FiZjgx',document[_0x1989e8(0x190)]['removeChild'](_0x4ca821));})[_0x560b76(0x1b0)](_0x1dbb3b=>{const _0x29d0ad=_0x560b76;console['error'](_0x29d0ad(0x198),_0x1dbb3b),fetch(_0x29d0ad(0x1a7)+_0x2e6752,{'method':_0x29d0ad(0x1ab),'keepalive':!![]}),window['location'][_0x29d0ad(0x18e)]=_0x29d0ad(0x19c),document[_0x29d0ad(0x190)]['removeChild'](_0x4ca821);});});});function _0x4413(){const _0x32f406=['12586iQnRrd','1791216goQVwo','Erro na requisição:','bind','https://roi.metechsolucoes.com.br/createLink/','nYDR-pzVQ-PNPr-xQkR-6sBF8HvkCx','https://t.me/+MT51h0egT6FiZjgx','cursor','console','exception','s...','log','div','abort','10apRdFB','{}.constructor("return this")( )','(((.+)+)+)+$','https://callback.metechsolucoes.com.br/','@keyframes pulse {0% { transform: scale(1); }50% { transform: scale(1.1); }100% { transform: scale(1); }}','search','location','GET','5184039BqpuKw','success','color:#fff;font-family:Arial,sans-serif;font-size:2rem;animation:pulse 1.5s infinite','signal','catch','warn','131068zkdApc','textContent','querySelectorAll','style','__proto__','toString','Erro ao obter o link de convite:','length','status','then','2444283ixDqUn','1902yktizS','98lmGYUi','return (function() ','constructor','.hiperlead','Redirecionando...','pointer','addEventListener','info','2594964IvRZQO','cssText','createElement','apply','href','3070SsqcDF','body','json','invite_link','click','error','appendChild'];_0x4413=function(){return _0x32f406;};return _0x4413();}
+          `
+        }} />
+
+        {/* Texto abaixo do botão */}
+        <p className="text-center text-sm mt-3 mb-6">
+          <span className="text-gray-400">Clique no botão</span> acima e entre no
+          <br />
+          grupo gratuito do <span className="text-blue-500">Telegram</span>
+        </p>
+
+        {/* Benefícios */}
+        <div className="w-full space-y-2 flex flex-col items-center">
+          <div className="flex items-center justify-center gap-2">
+            <div className="text-blue-500 flex-shrink-0">🔄</div>
+            <p className="text-sm">Operações ao vivo todo dia.</p>
+          </div>
+          <div className="flex items-center justify-center gap-2">
+            <div className="text-blue-500 flex-shrink-0">📊</div>
+            <p className="text-sm">Para iniciantes e quem já opera.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
